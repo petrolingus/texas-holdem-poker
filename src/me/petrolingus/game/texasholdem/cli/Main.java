@@ -5,6 +5,7 @@ import me.petrolingus.game.texasholdem.core.actions.Action;
 import me.petrolingus.game.texasholdem.core.bots.BasicBot;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * The game's main frame.
@@ -71,9 +72,20 @@ public class Main implements Client {
         players = new LinkedHashMap<>();
         humanPlayer = new Player("Player", STARTING_CASH, this);
         players.put("Player", humanPlayer);
-        players.put("Joe", new Player("Joe", STARTING_CASH, new BasicBot(0, 75)));
-        players.put("Mike", new Player("Mike", STARTING_CASH, new BasicBot(25, 50)));
-        players.put("Eddie", new Player("Eddie", STARTING_CASH, new BasicBot(50, 25)));
+
+        System.out.print("Enter the number of bots: ");
+        int countOfBots = new Scanner(System.in).nextInt();
+
+        for (int i = 0; i < countOfBots; i++) {
+            int tightness = ThreadLocalRandom.current().nextInt(100);
+            int aggression = ThreadLocalRandom.current().nextInt(100);
+            String name = "Bot #" + i;
+            players.put(name, new Player(name, STARTING_CASH, new BasicBot(tightness, aggression)));
+        }
+
+//        players.put("Joe", new Player("Joe", STARTING_CASH, new BasicBot(0, 75)));
+//        players.put("Mike", new Player("Mike", STARTING_CASH, new BasicBot(25, 50)));
+//        players.put("Eddie", new Player("Eddie", STARTING_CASH, new BasicBot(50, 25)));
 
         table = new Table(TABLE_TYPE, BIG_BLIND);
         for (Player player : players.values()) {
